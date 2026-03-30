@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="WhatsApp Web Clone - Chat instantly with contacts, send messages, voice notes, emojis, photos &amp; more. Fully functional, private &amp; beautiful. Works on mobile, tablet &amp; desktop.">
+    <meta name="keywords" content="whatsapp web, whatsapp clone, web whatsapp, chat app web, instant messaging web, whatsapp web demo">
+    <meta name="author" content="SAMER SAEID">
+    <meta name="robots" content="index, follow">
+    <title>WhatsApp Web • Chat • Calls • Status</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="canonical" href="https://yourdomain.com/whatsapp-web-clone">
+</head>
+<body>
+
+    <!-- NAVBAR / HEADER -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success sticky-top shadow-sm">
+        <div class="container-fluid px-3">
+            <a class="navbar-brand fw-bold d-flex align-items-center" href="#">
+                <i class="bi bi-whatsapp fs-3 me-2"></i>
+                WhatsApp
+            </a>
+            
+            <!-- Mobile menu toggle -->
+            <button class="navbar-toggler d-lg-none" type="button" onclick="toggleSidebar()">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="d-flex align-items-center flex-grow-1 justify-content-end">
+                <div class="d-flex align-items-center gap-4">
+                    <i onclick="switchTab(0)" class="bi bi-chat-dots-fill fs-4 cursor-pointer" style="color:white"></i>
+                    <i onclick="switchTab(1)" class="bi bi-clock-history fs-4 cursor-pointer text-white-50"></i>
+                    <i onclick="switchTab(2)" class="bi bi-telephone fs-4 cursor-pointer text-white-50"></i>
+                    <i onclick="switchTab(3)" class="bi bi-people fs-4 cursor-pointer text-white-50"></i>
+                    
+                    <!-- Profile -->
+                    <div class="d-flex align-items-center gap-2 cursor-pointer" onclick="showProfile()">
+                        <div class="rounded-circle bg-white text-success d-flex align-items-center justify-content-center" style="width:32px;height:32px;font-size:18px;">👤</div>
+                        <span class="d-none d-md-inline text-white fw-bold">SAMER SAEID</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container-fluid p-0" style="height:calc(100vh - 56px);">
+        <div class="row h-100 g-0">
+
+            <!-- SIDEBAR / CHATS LIST -->
+            <div id="sidebar" class="col-lg-4 col-xl-3 bg-white border-end h-100 overflow-auto">
+                
+                <!-- Search & New Chat -->
+                <div class="p-3 bg-light d-flex align-items-center">
+                    <div class="input-group">
+                        <span class="input-group-text bg-white border-0"><i class="bi bi-search text-muted"></i></span>
+                        <input id="searchInput" type="text" class="form-control border-0 py-2" placeholder="Search or start new chat" onkeyup="filterChats()">
+                    </div>
+                    <button onclick="newChat()" class="btn btn-link text-success ms-3">
+                        <i class="bi bi-plus-circle fs-4"></i>
+                    </button>
+                </div>
+
+                <!-- Chat List -->
+                <div id="chatList" class="list-group list-group-flush"></div>
+            </div>
+
+            <!-- MAIN CHAT AREA -->
+            <div class="col-lg-8 col-xl-9 h-100 d-flex flex-column bg-white">
+
+                <!-- Chat Header -->
+                <div id="chatHeader" class="d-flex align-items-center px-3 py-2 border-bottom bg-light">
+                    <div onclick="if(window.innerWidth<992) toggleSidebar()" class="d-flex align-items-center flex-grow-1 cursor-pointer">
+                        <div id="chatAvatar" class="rounded-circle bg-success text-white d-flex align-items-center justify-content-center me-3" style="width:40px;height:40px;font-size:22px;"></div>
+                        <div>
+                            <h6 id="chatName" class="mb-0 fw-bold"></h6>
+                            <small id="chatStatus" class="text-success">online</small>
+                        </div>
+                    </div>
+                    <div class="d-flex gap-4 text-success">
+                        <i onclick="startCall()" class="bi bi-telephone fs-4 cursor-pointer"></i>
+                        <i onclick="startVideoCall()" class="bi bi-camera-video fs-4 cursor-pointer"></i>
+                        <i onclick="showMoreMenu()" class="bi bi-three-dots-vertical fs-4 cursor-pointer"></i>
+                    </div>
+                </div>
+
+                <!-- Messages Area -->
+                <div id="messagesArea" class="flex-grow-1 p-3 overflow-auto bg-chat-pattern" style="background-image: url('https://i.ibb.co/0jX7Y7K/whatsapp-bg.png'); background-size: cover;">
+                    <div id="messagesContainer" class="d-flex flex-column gap-3"></div>
+                </div>
+
+                <!-- Message Input -->
+                <div class="bg-light p-3 border-top">
+                    <div class="d-flex align-items-center gap-2">
+                        <i onclick="showEmojiPicker()" class="bi bi-emoji-smile fs-3 text-muted cursor-pointer"></i>
+                        <input id="messageInput" type="text" class="form-control rounded-pill border-0 py-3" placeholder="Type a message..." onkeypress="if(event.key==='Enter') sendMessage()">
+                        <i onclick="attachFile()" class="bi bi-paperclip fs-3 text-muted cursor-pointer"></i>
+                        <i onclick="recordVoice()" class="bi bi-mic fs-3 text-muted cursor-pointer"></i>
+                        <button onclick="sendMessage()" class="btn btn-success rounded-circle d-flex align-items-center justify-content-center" style="width:48px;height:48px;">
+                            <i class="bi bi-send-fill"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- EMOJI PICKER POPOVER -->
+    <div id="emojiPicker" class="position-fixed bg-white shadow rounded-3 p-3 d-none" style="bottom:90px; left:30px; width:320px; z-index:1050;">
+        <div class="d-flex flex-wrap gap-2" style="max-height:260px;overflow-y:auto">
+            <!-- Emojis populated by JS -->
+        </div>
+    </div>
+
+    <!-- PROFILE MODAL -->
+    <div class="modal fade" id="profileModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title">Profile</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <div class="rounded-circle bg-success text-white mx-auto mb-3 d-flex align-items-center justify-content-center" style="width:120px;height:120px;font-size:60px;">👤</div>
+                    <h4>SAMER SAEID</h4>
+                    <p class="text-muted">+41 79 123 45 67</p>
+                    <div class="mt-4">
+                        <button onclick="logoutDemo()" class="btn btn-outline-danger w-100">Log out from this device</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="bg-light text-muted py-3 text-center small border-top">
+        <div class="container">
+            <span class="text-success">&copy; Copyright SAMER SAEID</span><br>
+            Made by ♥️ <a href="https://bio.link/samer" target="_blank" class="text-decoration-none fw-bold text-dark">SAMER SAEID</a>
+            <div class="mt-2">WhatsApp Web Clone • 100% Responsive • Works on every device</div>
+        </div>
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
